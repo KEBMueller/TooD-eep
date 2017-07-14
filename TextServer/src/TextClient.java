@@ -12,7 +12,7 @@ public class TextClient extends Thread{
 	private BufferedReader bufRead;
 	
 	public TextClient() throws UnknownHostException, IOException {
-		s = new Socket("192.168.178.21", 4);
+		s = new Socket("192.168.178.21",  TextServer.port);
 		reader = new InputStreamReader(s.getInputStream());
 		bufRead = new BufferedReader(reader);
 	}
