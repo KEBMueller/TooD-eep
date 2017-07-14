@@ -1,6 +1,6 @@
-\.project
-\README.md
-\.git
-\TextServer\.settings
-\TextServer\.classpath
-\TextServer\.project
+.project
+README.md
+.git
+TextServer\.settings
+TextServer\.classpath
+TextServer\.project
