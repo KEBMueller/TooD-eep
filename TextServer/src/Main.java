@@ -41,7 +41,7 @@ public class Main {
 					reader = new BufferedReader( new InputStreamReader(is , "UTF-8"));
 					writer = new BufferedWriter(new OutputStreamWriter(os));
 			
-					while(s.){
+					while(!s.isClosed()){
 						if(reader.ready()) {
 							String text = "error";
 							text = reader.readLine();
