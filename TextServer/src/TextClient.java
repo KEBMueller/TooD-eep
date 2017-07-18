@@ -6,6 +6,15 @@ import java.net.UnknownHostException;
 
 public class TextClient extends Thread{
 	
+	public static void main(String[] args){
+		Thread Chat;
+		try {
+			Chat = new TextClient();
+
+			Chat.start();
+		} catch (IOException e) {e.printStackTrace();}
+	}
+	
 	private Socket s;
 	
 	private InputStreamReader reader;
