@@ -17,7 +17,7 @@ public class TextServer extends Thread{
 		
 	}
 
-	public static int port = 8000;
+	public static int port = 8004;
 	public static int  retrys = 5;
 	
 	private boolean run = true;
@@ -33,18 +33,24 @@ public class TextServer extends Thread{
 	
 	public TextServer(){
 		int i = 0;
-		for(i = 0; i < retrys; i++){
+		for(i = 0; i < retrys && s == null; i++){
 			try {
 				ss = new ServerSocket(port);
+				say("a");
 				s = ss.accept();
+				say("b");
 				
 				os = s.getOutputStream();
 				is = s.getInputStream();
 			} catch (IOException e) {e.printStackTrace();}
 		} // end - for
-		say("Took " + i + " Trys to creat ServerSocket");
+		say("Took " + i + " Trys to creat ServerSocket s:" + (s == null));
 		
-		if(ss != null) {
+		if(s == null) {
+			safeExit();
+			run = false;
+		}
+		else if(ss != null) {
 			bw = new BufferedWriter(new OutputStreamWriter(os));
 			br = new BufferedReader(new InputStreamReader(is));
 		}
@@ -57,12 +63,16 @@ public class TextServer extends Thread{
 	@Override
 	public void run() {
 			while(ss != null && run) {
-				while(s.isBound()){
+				while(s.isClosed()){
 					try {
 						if(br.ready()){
 							String message = br.readLine();
 							say(message);
 							bw.write(message);
+							if(message.equals("exit")) {
+								run = false;
+								safeExit();
+							}
 						}
 					} catch (IOException e) {e.printStackTrace(); safeExit(); run = false;}
 				}
@@ -78,13 +88,15 @@ public class TextServer extends Thread{
 	public synchronized boolean getRun(){return run;}
 	
 	
-	public void safeExit() throws IOException {
-		if(ss != null) {
-			ss.close();
-		}
-		if(s != null) {
-			s.close();
-		}
+	public void safeExit() {
+		try {
+			if(ss != null) {
+					ss.close();
+			}
+			if(s != null) {
+				s.close();
+			}
+		} catch (IOException e) {e.printStackTrace();}
 	}
 	
 	/*
