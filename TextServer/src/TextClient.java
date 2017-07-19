@@ -9,13 +9,11 @@ import java.net.UnknownHostException;
 public class TextClient extends Thread{
 	
 	public static void main(String[] args){
-		Thread Chat;
+		TextClient Chat;
 		say("Client");
-		try {
-			Chat = new TextClient();
+		Chat = new TextClient();
 
-			Chat.start();
-		} catch (IOException e) {e.printStackTrace();}
+		Chat.start();
 	}
 	
 	private Socket s;
@@ -26,22 +24,35 @@ public class TextClient extends Thread{
 	private OutputStreamWriter ow;
 	private BufferedWriter bw;
 	
-	public TextClient() throws UnknownHostException, IOException {
-		s = new Socket("192.168.178.21",  TextServer.port);
-		ir = new InputStreamReader(s.getInputStream());
-		br = new BufferedReader(ir);
-		
-		ow = new OutputStreamWriter(s.getOutputStream());
-		bw = new BufferedWriter(ow);
+	public TextClient(){
 		
 	}
 
 	public void run(){
 		try {
-			bw.write("Hello");
-			bw.write("exit");
+			s = new Socket("192.168.178.21",  TextServer.port);
+			Thread.sleep(20);
+		ir = new InputStreamReader(s.getInputStream());
+		br = new BufferedReader(ir);
+		
+		ow = new OutputStreamWriter(s.getOutputStream());
+		bw = new BufferedWriter(ow);
+			bw.write("Hello\n");
+			bw.write("exit\n");
+			say("exit");
 			s.close(); 
-		} catch (IOException e) {e.printStackTrace();}
+		} catch (IOException | InterruptedException e1) {e1.printStackTrace();}
+	}
+	
+	/*
+	 * 
+	 */
+	public void send(String msg){
+		if(bw != null){
+			try {
+				bw.write(msg);
+			} catch (IOException e) {e.printStackTrace(); say("Could not send :"+ msg);}
+		}
 	}
 	
 	public static void say (String m) {

@@ -17,7 +17,7 @@ public class TextServer extends Thread{
 		
 	}
 
-	public static int port = 8004;
+	public static int port = 9996;
 	public static int  retrys = 5;
 	
 	private boolean run = true;
@@ -33,27 +33,14 @@ public class TextServer extends Thread{
 	
 	public TextServer(){
 		int i = 0;
-		for(i = 0; i < retrys && s == null; i++){
+		for(i = 0; i < retrys && ss == null; i++){
 			try {
 				ss = new ServerSocket(port);
 				say("a");
-				s = ss.accept();
-				say("b");
-				
-				os = s.getOutputStream();
-				is = s.getInputStream();
-			} catch (IOException e) {e.printStackTrace();}
+			} catch (IOException e) {e.printStackTrace(); safeExit();}
 		} // end - for
-		say("Took " + i + " Trys to creat ServerSocket s:" + (s == null));
+		say("Took " + i + " Trys to creat \n ServerSocket s:" + (s == null));
 		
-		if(s == null) {
-			safeExit();
-			run = false;
-		}
-		else if(ss != null) {
-			bw = new BufferedWriter(new OutputStreamWriter(os));
-			br = new BufferedReader(new InputStreamReader(is));
-		}
 	} // End  
 	
 	
@@ -62,9 +49,27 @@ public class TextServer extends Thread{
 	 */
 	@Override
 	public void run() {
-			while(ss != null && run) {
-				while(s.isClosed()){
-					try {
+		try {
+		double time = System.currentTimeMillis();
+			while(ss != null &&run) {
+				if(System.currentTimeMillis() - time > 10000){
+					run = false;
+				}
+				
+				if(s == null || s.isClosed()){
+					say("Connecting");
+					s = ss.accept();
+					say("Connected");
+				
+					os = s.getOutputStream();
+					is = s.getInputStream();
+					bw = new BufferedWriter(new OutputStreamWriter(os));
+					br = new BufferedReader(new InputStreamReader(is));
+				}
+					
+				double t = System.currentTimeMillis();
+				while(!s.isClosed()){
+					
 						if(br.ready()){
 							String message = br.readLine();
 							say(message);
@@ -72,14 +77,12 @@ public class TextServer extends Thread{
 							if(message.equals("exit")) {
 								run = false;
 								safeExit();
+								say("exiting");
 							}
 						}
-					} catch (IOException e) {e.printStackTrace(); safeExit(); run = false;}
 				}
-				try {
-					s = ss.accept();
-				} catch (IOException e) {e.printStackTrace(); safeExit();  run = false;}
 			}
+		} catch (IOException e) {e.printStackTrace(); safeExit(); run = false;}
 	}
 	
 	/*

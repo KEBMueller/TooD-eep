@@ -6,15 +6,14 @@ public class Main {
 		
 		Thread a,b;
 		
-		try {
-			a = new TextClient();
-
-			b = new TextServer();
-			
-			b.start();
-			System.out.println("now a");
-			a.start();
-		} catch (IOException e) {e.printStackTrace();}
+		b = new TextServer();
+		a = new TextClient();
+		
+		b.start();
+		System.out.println("now a");
+		a.start();
+		
+		((TextServer)b).safeExit();
 	}
 
 }
