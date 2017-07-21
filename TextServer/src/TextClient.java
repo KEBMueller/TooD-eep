@@ -1,10 +1,10 @@
 import java.io.BufferedReader;
+import Server.Server;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class TextClient extends Thread{
 	
@@ -25,13 +25,15 @@ public class TextClient extends Thread{
 	private BufferedWriter bw;
 	
 	public TextClient(){
-		
+		s = null;
 	}
 
 	public void run(){
 		try {
-			s = new Socket("192.168.178.21",  TextServer.port);
-			Thread.sleep(20);
+			say("Connecting");
+			s = new Socket("192.168.178.21",  Server.getPort());
+			say("Connected");
+			Thread.sleep(200);
 		ir = new InputStreamReader(s.getInputStream());
 		br = new BufferedReader(ir);
 		
@@ -39,9 +41,21 @@ public class TextClient extends Thread{
 		bw = new BufferedWriter(ow);
 			bw.write("Hello\n");
 			bw.write("exit\n");
+			//bw.flush();
 			say("exit");
 			s.close(); 
 		} catch (IOException | InterruptedException e1) {e1.printStackTrace();}
+	}
+	/*
+	 * 
+	 */
+	public void safeExit() {
+		try {
+			s.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/*

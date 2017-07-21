@@ -1,6 +1,8 @@
+.git
+.metadata
+.recommenders
 .project
 README.md
-.git
 TextServer\.settings
 TextServer\.classpath
 TextServer\.project
