@@ -34,7 +34,7 @@ public class Connection extends Thread{
 	}
 	
 	 /*
-	  * 
+	  * Handles the Communication
 	  */
 	public void run(){
 		while(run){
@@ -48,7 +48,7 @@ public class Connection extends Thread{
 	}
 	
 	/*
-	 * 
+	 * System.out
 	 */
 	public void say(String msg){
 		System.out.println(msg);

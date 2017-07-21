@@ -40,30 +40,26 @@ public class Server extends Thread{
 	private OutputStream os;
 	private BufferedWriter bw;
 	
-	
+	/*
+	 * Creates Serversocket ss on Port 'port'
+	 */
 	public Server(){
 		int i = 0;
 		for(i = 0; i < retrys && ss == null; i++){
 			try {
+				say("creating serversocket");
 				ss = new ServerSocket(port);
-				say("a");
+				say("created Serversocket");
 			} catch (IOException e) {e.printStackTrace(); safeExit();}
 		} // end - for
-		say("Took " + i + " Trys to creat \n ServerSocket");
+		say("Took " + i + " Trys to creat ServerSocket");
 		
 	} // End  
 	
-	/*
-	 * Macht alles was "Server" machen muss für safe Exit. duh
-	 */
-	private void safeExit() {
-		
-		
-	}
 
 
-	/*
-	 * Mach ne vernünftige run!
+	/*Verwalted den Serversocket und überwacht/Verwalltet die Connections
+	 * 
 	 */
 	@Override
 	public void run() {
@@ -71,10 +67,9 @@ public class Server extends Thread{
 	}
 	
 	/*
-	 * 
+	 * Getters
 	 */
 	public synchronized boolean getRun(){return run;}
-	
 	public static int getPort() {return port;}
 	
 	
@@ -83,5 +78,14 @@ public class Server extends Thread{
 	 */
 	public static void say(String a){
 		System.out.println(a);
+	}
+	
+
+	/*
+	 * Macht alles was "Server" machen muss für safe Exit. duh
+	 */
+	private void safeExit() {
+		
+		
 	}
 }
