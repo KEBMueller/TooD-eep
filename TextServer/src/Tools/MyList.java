@@ -1,5 +1,8 @@
 package Tools;
 
+/*
+ * doppeltverkettete Liste
+ */
 public class MyList<T> {
 	private class Node<T> {
 		private Node next = null, 
@@ -25,11 +28,42 @@ public class MyList<T> {
 		public void setValue(T t) { this.value = t;}
 	}
 	
-	private Node first,current;
+	private Node first,current,last;
+	private int size = 0;
 	
+	/*
+	 * everything null
+	 */
 	public MyList() {
 		first = null;
 		current = null;
+		last = null;
+	}
+	
+	/*
+	 * adds new Node at end
+	 */
+	public void add(T v){
+		if(!isEmpty()){
+			Node n = new Node(last,null,v);
+			last.setNext(n);
+		} else {
+			first = new Node(null,null,v);
+			current = first;
+		}
+	}
+	
+	/*
+	 * Removes Current if hasCurrent
+	 */
+	public void remove(){
+		if(!isEmpty() && hasCurrent()){
+			Node p = current.getPrev();
+			Node n = current.getNext();
+			
+			p.setNext(n);
+			n.setPrev(p);
+		}
 	}
 	
 	/*
@@ -39,10 +73,18 @@ public class MyList<T> {
 		return first == null;
 	}
 	
+	
+	 /*
+	  *  current != null
+	  */
 	public boolean hasCurrent(){
 		return current != null;
 	}
 	
+	
+	/*
+	 * 
+	 */
 	public T getVal(){
 		if(!isEmpty() && hasCurrent()) {
 			return (T) current.getVal();
@@ -51,7 +93,18 @@ public class MyList<T> {
 		return null;
 	}
 	
+	
+	/*
+	 *  current auf das nächste Objekt
+	 */
 	public void next(){
 		current = current.getNext();
 	}
+	
+	/*
+	 * current auf das vorherige Objekt
+	 */
+	public void prev(){
+		current = current.getPrev();
+	
 }
