@@ -11,16 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server extends Thread{
-	
-	public static void main (String[] args){
-		Thread TextServer = new Thread(new Server());
-		say("Starting Server");
-		TextServer.start();
-		
-	}
-	
-	/* Options*/
-		/*Connection*/
+	/* Statics*/
 	public static int port = 9999;
 	public static String ip = "192.168.178.21";
 	private static int  retrys = 5;
@@ -29,16 +20,11 @@ public class Server extends Thread{
 	
 	
 	
-	
 	/* Internal Variables*/
 	private boolean run = true;
 	
 	private ServerSocket ss;
-	private MyList<Socket> sockets;
-	private InputStream is;
-	private BufferedReader br;
-	private OutputStream os;
-	private BufferedWriter bw;
+	private MyList<Connection> connections;
 	
 	/*
 	 * Creates Serversocket ss on Port 'port'
@@ -58,12 +44,27 @@ public class Server extends Thread{
 	
 
 
-	/*Verwalted den Serversocket und überwacht/Verwalltet die Connections
+	/*
+	 * Verwalted und überwacht den ServerSocket und die Connections
 	 * 
 	 */
 	@Override
 	public void run() {
-		
+		int freeSlots = slots;
+		while(getRun()) {
+			for(int i = 0; i < freeSlots && connections.getSize() < freeSlots; i++){say("Creating Socket :"+ i);
+				Connection newC = new Connection(this, "" + i);
+				connections.add(newC);
+				newC.start();
+			}
+			
+			if(connections.hasCurrent()){
+				Connection current = connections.getVal();
+				
+				this.processConnection(current);
+			}
+			
+		}
 	}
 	
 	/*
@@ -80,12 +81,63 @@ public class Server extends Thread{
 		System.out.println(a);
 	}
 	
+	public synchronized void processMsg(String ip, int port, String msg){
+		say("Ip : "+ip+" Port : " + port + " Message : " + msg);
+	}
+	
+	/*
+	 * Does everything in order to process all pendup messages from the given Connection
+	 */
+	public void processConnection(Connection c){
+		if(c.hasMessage()) {
+			String[] e = c.getMessages();
+			Socket t = c.getSocket();
+			String ip = t.getInetAddress().getHostAddress();
+			int port = t.getPort();
+			for(int i = 0; i < e.length; i++) {
+				processMsg(ip,port,e[i]);
+			}
+		}
+	}
 
 	/*
-	 * Macht alles was "Server" machen muss für safe Exit. duh
+	 * Macht alles was "Server" machen muss für safe Exit. duh~~
 	 */
-	private void safeExit() {
+	public void safeExit() {
 		
+		
+	}
+	
+	/*
+	 * 
+	 */
+	public static String lockMsg(String msg){
+		return msg;
+	}
+	
+	/*
+	 * 
+	 */
+	public static String openMsg(String msg){
+		return msg;
+	}
+	
+	/*
+	 * 
+	 */
+	public Socket getConnection() throws IOException {
+		if(ss != null) {
+			return ss.accept();
+		}
+		return null;
+	}
+	
+
+	
+	public static void main (String[] args){
+		Thread TextServer = new Thread(new Server());
+		say("Starting Server");
+		TextServer.start();
 		
 	}
 }

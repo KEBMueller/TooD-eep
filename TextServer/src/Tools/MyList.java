@@ -5,30 +5,30 @@ package Tools;
  */
 public class MyList<T> {
 	private class Node<T> {
-		private Node next = null, 
+		private Node<T> next = null, 
 			         prev = null;
 		private T value = null;
 		
-		public Node(Node p, Node n, T v){
+		public Node(Node<T> p, Node<T> n, T v){
 			next = n;
 			prev = p;
 			value = v;
 		}
 		
-		public Node getNext(){return next;}
+		public Node<T> getNext(){return next;}
 		
-		public Node getPrev(){return prev;}
+		public Node<T> getPrev(){return prev;}
 		
-		public void setNext(Node n){next = n;}
+		public void setNext(Node<T> n){next = n;}
 		
-		public void setPrev(Node p){prev = p;}
+		public void setPrev(Node<T> p){prev = p;}
 		
 		public T getVal(){ return value;}
 		
 		public void setValue(T t) { this.value = t;}
 	}
 	
-	private Node first,current,last;
+	private Node<T> first,current,last;
 	private int size = 0;
 	
 	/*
@@ -45,12 +45,13 @@ public class MyList<T> {
 	 */
 	public void add(T v){
 		if(!isEmpty()){
-			Node n = new Node(last,null,v);
+			Node<T> n = new Node<T>(last,null,v);
 			last.setNext(n);
 		} else {
 			first = new Node(null,null,v);
 			current = first;
 		}
+		size++;
 	}
 	
 	/*
@@ -58,12 +59,13 @@ public class MyList<T> {
 	 */
 	public void remove(){
 		if(!isEmpty() && hasCurrent()){
-			Node p = current.getPrev();
-			Node n = current.getNext();
-			
+			Node<T> p = current.getPrev();
+			Node<T> n = current.getNext();
+			current = n;
 			p.setNext(n);
 			n.setPrev(p);
 		}
+		size--;
 	}
 	
 	/*
@@ -93,6 +95,21 @@ public class MyList<T> {
 		return null;
 	}
 	
+	/*
+	 * Returns current val and removes current;
+	 */
+	public T pop(){
+		if(this.hasCurrent()){
+			T e = current.getVal();
+			this.remove();
+			return e;
+		}
+		return null;
+	}
+	
+	public void toFirst(){
+		current = first;
+	}
 	
 	/*
 	 *  current auf das nächste Objekt
@@ -106,5 +123,9 @@ public class MyList<T> {
 	 */
 	public void prev(){
 		current = current.getPrev();
+	}
+	
+	//Getters'n Setters
+	public int getSize(){return size;}
 	
 }
