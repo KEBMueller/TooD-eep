@@ -6,15 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
-public class TextClient extends Thread{
-	
-	public static void main(String[] args){
-		TextClient Chat;
-		say("Client");
-		Chat = new TextClient();
-
-		Chat.start();
-	}
+public class Client extends Thread{
 	
 	private Socket s;
 	
@@ -24,7 +16,7 @@ public class TextClient extends Thread{
 	private OutputStreamWriter ow;
 	private BufferedWriter bw;
 	
-	public TextClient(){
+	public Client(){
 		s = null;
 	}
 
@@ -39,23 +31,20 @@ public class TextClient extends Thread{
 		
 		ow = new OutputStreamWriter(s.getOutputStream());
 		bw = new BufferedWriter(ow);
-			bw.write("Hello\n");
-			bw.write("exit\n");
-			//bw.flush();
-			say("exit");
+			say("exi");
 			s.close(); 
 		} catch (IOException | InterruptedException e1) {e1.printStackTrace();}
 	}
+	
+	
 	/*
 	 * 
 	 */
 	public void safeExit() {
 		try {
+			say("closing s")
 			s.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} catch (IOException e) {e.printStackTrace();}
 	}
 	
 	/*
@@ -69,7 +58,18 @@ public class TextClient extends Thread{
 		}
 	}
 	
+	/*
+	 * my println
+	 */
 	public static void say (String m) {
 		System.out.println(m);
+	}
+	
+	public static void main(String[] args){
+		Client Chat;
+		say("Client");
+		Chat = new Client();
+
+		Chat.start();
 	}
 }
