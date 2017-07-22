@@ -27,7 +27,7 @@ public class Server extends Thread{
 	private MyList<Connection> connections;
 	
 	/*
-	 * Creates Serversocket ss on Port 'port'
+	 * Creates ServerSocket ss on Port 'port'
 	 */
 	public Server(){
 		int i = 0;
@@ -45,12 +45,18 @@ public class Server extends Thread{
 
 
 	/*
-	 * Verwalted und überwacht den ServerSocket und die Connections
+	 * handles the connection communication, effectually is the hearth of the server,
+	 * 
+	 * runs while run == true
+	 * 
+	 * ToDo: Thinking about a way to close the server without client interaction (creat terminal?)
+	 * 		or: create rulesystem to identify higher and lower connections (Admins - User) and let the admins 
+	 * 			manage the server?
 	 * 
 	 */
 	@Override
 	public void run() {
-		int freeSlots = slots;
+		int freeSlots = slots; // so i can change slots and then later change freeSlots in controlled manner 
 		while(getRun()) {
 			for(int i = 0; i < freeSlots && connections.getSize() < freeSlots; i++){say("Creating Socket :"+ i);
 				Connection newC = new Connection(this, "" + i);
@@ -59,7 +65,7 @@ public class Server extends Thread{
 			}
 			
 			if(connections.hasCurrent()){
-				Connection current = connections.getVal();
+				Connection current = connections.getObj();
 				
 				this.processConnection(current);
 			}
@@ -67,11 +73,7 @@ public class Server extends Thread{
 		}
 	}
 	
-	/*
-	 * Getters
-	 */
-	public synchronized boolean getRun(){return run;}
-	public static int getPort() {return port;}
+	
 	
 	
 	/*
@@ -81,12 +83,19 @@ public class Server extends Thread{
 		System.out.println(a);
 	}
 	
+	
+	/*
+	 * Central message processing
+	 * 
+	 * Will most probably be moved to Connection for performance but for now 
+	 * i go with a global processing methode.
+	 */
 	public synchronized void processMsg(String ip, int port, String msg){
 		say("Ip : "+ip+" Port : " + port + " Message : " + msg);
 	}
 	
 	/*
-	 * Does everything in order to process all pendup messages from the given Connection
+	 * Does everything in order to process the given Connection and every pend up message etc.
 	 */
 	public void processConnection(Connection c){
 		if(c.hasMessage()) {
@@ -109,29 +118,30 @@ public class Server extends Thread{
 	}
 	
 	/*
-	 * 
+	 * The encrypting method 
 	 */
 	public static String lockMsg(String msg){
 		return msg;
 	}
 	
 	/*
-	 * 
+	 * The encrypting method
 	 */
 	public static String openMsg(String msg){
 		return msg;
 	}
 	
 	/*
-	 * 
+	 * Getters
 	 */
+	public synchronized boolean getRun(){return run;}
+	public static int getPort() {return port;}
 	public Socket getConnection() throws IOException {
 		if(ss != null) {
 			return ss.accept();
 		}
 		return null;
 	}
-	
 
 	
 	public static void main (String[] args){

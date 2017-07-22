@@ -85,9 +85,9 @@ public class MyList<T> {
 	
 	
 	/*
-	 * 
+	 * ---
 	 */
-	public T getVal(){
+	public T getObj(){
 		if(!isEmpty() && hasCurrent()) {
 			return (T) current.getVal();
 		}
@@ -107,22 +107,31 @@ public class MyList<T> {
 		return null;
 	}
 	
+	
+	 /*
+	  * ---
+	  */
 	public void toFirst(){
 		current = first;
 	}
+	
 	
 	/*
 	 *  current auf das nächste Objekt
 	 */
 	public void next(){
-		current = current.getNext();
+		if(this.hasCurrent()){
+			current = current.getNext();
+		}
 	}
 	
 	/*
 	 * current auf das vorherige Objekt
 	 */
 	public void prev(){
-		current = current.getPrev();
+		if(this.hasCurrent()) {
+			current = current.getPrev();
+		}
 	}
 	
 	//Getters'n Setters
