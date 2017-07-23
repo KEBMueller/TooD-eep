@@ -42,7 +42,7 @@ public class Client extends Thread{
 	 */
 	public void safeExit() {
 		try {
-			say("closing s")
+			say("closing socket s ");
 			s.close();
 		} catch (IOException e) {e.printStackTrace();}
 	}

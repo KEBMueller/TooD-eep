@@ -1,0 +1,29 @@
+23.07.2017 5:30
+
+Ich hab noch keinen Kronkrete Idee wo ich eigentlich hin will mit dem Spiel.
+
+---------------
+Server - Client
+---------------
+Dann müsste ich festlegen wer den Server bereitstellt. 
+Der Server muss die Eingaben überprüfen falls ich die Clienten rechnen lasse.
+Oder ich brauch ein Input-Modell "Controler" in dem ich nur gültige communication zulasse.
+Das würde das es vereinfachen den Server zu schreiben, fühlt sich aber schwer an wenns um
+Definition und Erweiterung geht.
+
+Hmm aber ist wohl die schönere Art.
+
+Ich versuche es erstmal mit Indipendent-Clients die sich dann gegenseitig per ip adden können.
+
+Dann muss ich auch nur einen Zentrallen server für alle schreiben und kann den Clienten 
+erstmal weglassen juhu!
+
+DAnn muss ich den Server verbessern, dass der die verbindungen angemessen verwallten kann.
+
+ToDo:
+Name für eine Connection,
+Name - Ip 
+Connection auf die erste ip specialisieren. Dedicated Connection sozusagen.
+
+Später könnte ich auch die Connection direkt mit einem Spieler Objekt verknüpfen.
+Auf gehts...

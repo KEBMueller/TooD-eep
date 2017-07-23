@@ -38,6 +38,7 @@ public class Server extends Thread{
 				say("created Serversocket");
 			} catch (IOException e) {e.printStackTrace(); safeExit();}
 		} // end - for
+		
 		say("Took " + i + " Trys to creat ServerSocket");
 		
 	} // End  
@@ -45,12 +46,12 @@ public class Server extends Thread{
 
 
 	/*
-	 * handles the connection communication, effectually is the hearth of the server,
+	 * handles the connection communication, it effectively is the hearth of the server,
 	 * 
 	 * runs while run == true
 	 * 
-	 * ToDo: Thinking about a way to close the server without client interaction (creat terminal?)
-	 * 		or: create rulesystem to identify higher and lower connections (Admins - User) and let the admins 
+	 * ToDo: Thinking about a way to close the server without client interaction (create terminal?)
+	 * 		or: create rulesystem to identify higher and lower connections (admins - User) and let the admins 
 	 * 			manage the server?
 	 * 
 	 */
@@ -73,7 +74,20 @@ public class Server extends Thread{
 		}
 	}
 	
-	
+	/*
+	 * Does everything in order to process the given Connection and every pend up message etc.
+	 */
+	public void processConnection(Connection c){
+		if(c.hasMessage()) {
+			String[] e = c.getMessages();
+			Socket t = c.getSocket();
+			String ip = t.getInetAddress().getHostAddress();
+			int port = t.getPort();
+			for(int i = 0; i < e.length; i++) {
+				processMsg(ip,port,e[i]);
+			}
+		}
+	}
 	
 	
 	/*
@@ -94,20 +108,6 @@ public class Server extends Thread{
 		say("Ip : "+ip+" Port : " + port + " Message : " + msg);
 	}
 	
-	/*
-	 * Does everything in order to process the given Connection and every pend up message etc.
-	 */
-	public void processConnection(Connection c){
-		if(c.hasMessage()) {
-			String[] e = c.getMessages();
-			Socket t = c.getSocket();
-			String ip = t.getInetAddress().getHostAddress();
-			int port = t.getPort();
-			for(int i = 0; i < e.length; i++) {
-				processMsg(ip,port,e[i]);
-			}
-		}
-	}
 
 	/*
 	 * Macht alles was "Server" machen muss für safe Exit. duh~~
@@ -136,7 +136,7 @@ public class Server extends Thread{
 	 */
 	public synchronized boolean getRun(){return run;}
 	public static int getPort() {return port;}
-	public Socket getConnection() throws IOException {
+	public Socket getConnection() throws IOException { // For Connection to get the socket without needing the ServerSocket
 		if(ss != null) {
 			return ss.accept();
 		}

@@ -16,6 +16,9 @@ public class Connection extends Thread{
 	/*Personal*/
 	private String name;
 	
+	private String partnerIp;
+	
+	
 	/* Internal*/
 	private Server manager; // Parent
 	
@@ -34,8 +37,10 @@ public class Connection extends Thread{
 	private double lastSend = 0;
 	
 	/* Static*/
-	public static int criticalIdleTime = 5000;   //Time in ms after which a Connection is considered closed;
+	public static int suspiciouslIdleTime = 2500;   // Time in ms after which a connection is considered interrupted
+	public static int criticalIdleTime = 5000;   //Time in ms after which a Connection is considered lost
 	
+	public static String wakeupCall = "pop";
 	
 	/*
 	 * name is a unused field right now, but i am planning to use it in order to distinguish
@@ -79,7 +84,8 @@ public class Connection extends Thread{
 					
 				reader = new BufferedReader(new InputStreamReader(is));
 				writer = new BufferedWriter(new OutputStreamWriter(os));
-			}
+				say("Created writer and reader");
+				}
 				
 			while(!s.isClosed() && run) {
 				if(reader.ready()) {
@@ -91,16 +97,24 @@ public class Connection extends Thread{
 					msg = Server.openMsg(msg);
 				    messages.add(msg);
 						
-				}
+					}
+				if(lastSend - lastAnswer > suspiciouslIdleTime &&    //zweistufige Überprüfung ob  Connection lost
+				    System.currentTimeMillis() - lastSend < criticalIdleTime){
+					say("Connection " + this.name + " is suspicious");
+					say("sending test msg");
+					this.sendMsg(this.wakeupCall);
+				} 
 				if(lastSend - lastAnswer > criticalIdleTime) {
+					say("Connection " + this.name + " lost");
 					run = false;
+					}
+					
 				}
-			}
-	    	} catch (IOException e) {e.printStackTrace();  run = false;}
+				} catch (IOException e) {e.printStackTrace();  run = false;}
 			
 			safeExit();
-		}
-	}//End
+			}
+		}//End
 	
 	/*
 	 * Sends a message, but encodes it first via Server.lockMsg()
@@ -109,7 +123,7 @@ public class Connection extends Thread{
 		msg = Server.lockMsg(msg);
 		
 		lastSend = System.currentTimeMillis();
-		
+		lastAnswer = lastSend;
 		if(writer != null) {
 			try {
 				writer.write(msg);
@@ -136,6 +150,8 @@ public class Connection extends Thread{
 				reader.close();
 				is.close();
 				os.close();
+				s.shutdownInput();
+				s.shutdownOutput();
 				s.close();
 			} catch (IOException e) {e.printStackTrace();}
 		}
