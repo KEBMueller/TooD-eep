@@ -29,7 +29,7 @@ public class Connection extends Thread{
 	private BufferedReader reader;
 	private BufferedWriter writer;
 
-	private MyList<String> messages; // all pend up messages
+	private MyList<String> messages; // all pend up messenges
 	
 	private boolean run = true;
 	

@@ -24,6 +24,9 @@ ToDo:
 Name für eine Connection,
 Name - Ip 
 Connection auf die erste ip specialisieren. Dedicated Connection sozusagen.
+Communication schon in connection anfangen, nicht wie jetzt einfach in nachserver pumpen.
+
 
 Später könnte ich auch die Connection direkt mit einem Spieler Objekt verknüpfen.
 Auf gehts...
+
